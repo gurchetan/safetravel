@@ -489,7 +489,7 @@ else:
     for a in filtered:
         grouped[a["level"]].append(a)
 
-    for level in [4, 3, 2, 1]:
+    for level in [1, 2, 3, 4]:
         group = grouped[level]
         if not group:
             continue
@@ -498,7 +498,7 @@ else:
 
         with st.expander(
             f"{cfg['emoji']}  Level {level} — {cfg['label']}  ({len(group)} countries)",
-            expanded=(level >= 3),
+            expanded=False,
         ):
             # Country cards
             cards_html = ""
@@ -518,12 +518,76 @@ else:
             st.markdown(cards_html, unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────
-# DONATION + FOOTER
+# INTERACTIVE MAP (State Dept travelmaps.state.gov)
+# ──────────────────────────────────────────────
+# ──────────────────────────────────────────────
+# INTERACTIVE MAP — full viewport, desktop only
 # ──────────────────────────────────────────────
 st.markdown(
     """
 <style>
-/* ── Donation card ── */
+/* Desktop-only full-viewport map wrapper */
+@media (min-width: 768px) {
+    .map-section {
+        display: block;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        width: 100vw;
+        height: 100vh;
+        margin-top: 32px;
+        margin-bottom: 0;
+    }
+    .map-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #8E8E93;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 0 0 10px 4px;
+        margin-top: 28px;
+    }
+    .map-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+}
+/* Hide map entirely on mobile */
+@media (max-width: 767px) {
+    .map-section { display: none !important; }
+    .map-label   { display: none !important; }
+}
+</style>
+
+<div class="map-label">&#x1F5FA;&#xFE0F;&nbsp; Interactive Advisory Map &mdash; travelmaps.state.gov</div>
+<div class="map-section">
+  <iframe
+    class="map-iframe"
+    src="https://travelmaps.state.gov/TSGMap/"
+    allowfullscreen
+    loading="lazy">
+  </iframe>
+</div>
+""",
+    unsafe_allow_html=True,
+)
+
+
+# ──────────────────────────────────────────────
+# DONATION + FOOTER
+# ──────────────────────────────────────────────
+
+# Inject CSS separately — no HTML comments in this block
+st.markdown(
+    """
+<style>
 .donate-card {
     background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
     border-radius: 20px;
@@ -564,17 +628,13 @@ st.markdown(
 }
 .donate-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 .donate-btn:active { transform: translateY(0); }
-
 .btn-paypal  { background: #003087; color: #fff; }
 .btn-stripe  { background: #635BFF; color: #fff; }
 .btn-cashapp { background: #00D632; color: #fff; }
 .btn-venmo   { background: #3D95CE; color: #fff; }
 .btn-apple   { background: #fff;    color: #000; }
 .btn-zelle   { background: #6D1ED4; color: #fff; }
-
 .btn-icon { font-size: 16px; flex-shrink: 0; }
-
-/* ── Creator credit ── */
 .creator-bar {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     background: white;
@@ -595,87 +655,84 @@ st.markdown(
 .creator-text { text-align: left; }
 .creator-name { font-size: 14px; font-weight: 600; color: #1C1C1E; margin: 0 0 1px; }
 .creator-role { font-size: 11px; color: #8E8E93; margin: 0; }
-
-/* ── Footer note ── */
 .footer-note {
     text-align: center; color: #AEAEB2; font-size: 11px;
-    margin-top: 8px; padding-top: 14px;
+    margin-top: 20px; padding-top: 14px;
     border-top: 1px solid rgba(0,0,0,0.06);
     line-height: 1.7;
 }
 </style>
+""",
+    unsafe_allow_html=True,
+)
 
-<!-- Creator Credit -->
+# Creator credit — rendered separately from the CSS block
+st.markdown(
+    """
 <div class="creator-bar">
   <div class="creator-avatar">G</div>
   <div class="creator-text">
     <div class="creator-name">Gurchetan Singh</div>
-    <div class="creator-role">Created this app · US Travel Advisory Tracker</div>
+    <div class="creator-role">Created this app &middot; US Travel Advisory Tracker</div>
   </div>
 </div>
+""",
+    unsafe_allow_html=True,
+)
 
-<!-- Donation Card -->
+# Donation card — no HTML comments, properly closed divs
+st.markdown(
+    """
 <div class="donate-card">
-  <div class="donate-title">☕ Support This App</div>
+  <div class="donate-title">&#9749; Support This App</div>
   <div class="donate-subtitle">
     Built and maintained by Gurchetan Singh.<br>
     If this tool helped your travel planning, consider buying me a coffee!
   </div>
-
   <div class="donate-grid">
-
-    <!-- PayPal -->
     <a class="donate-btn btn-paypal"
        href="https://www.paypal.com/donate/?business=456SKVHVRT29N&no_recurring=0&item_name=Thank+you+for+your+support+&currency_code=USD"
        target="_blank" rel="noopener">
-      <span class="btn-icon">🅿</span> PayPal
+      <span class="btn-icon">&#x1F1F5;</span> PayPal
     </a>
-
-    <!-- Stripe (buy me a coffee style link) -->
     <a class="donate-btn btn-stripe"
        href="https://buy.stripe.com/YOUR_STRIPE_LINK"
        target="_blank" rel="noopener">
-      <span class="btn-icon">💳</span> Card / Stripe
+      <span class="btn-icon">&#x1F4B3;</span> Card / Stripe
     </a>
-
-    <!-- Cash App -->
     <a class="donate-btn btn-cashapp"
        href="https://cash.app/$gurchetan"
        target="_blank" rel="noopener">
-      <span class="btn-icon">💵</span> Cash App
+      <span class="btn-icon">&#x1F4B5;</span> Cash App
     </a>
-
-    <!-- Venmo -->
     <a class="donate-btn btn-venmo"
        href="https://venmo.com/GurchetanSingh"
        target="_blank" rel="noopener">
-      <span class="btn-icon">✌️</span> Venmo
+      <span class="btn-icon">&#x270C;&#xFE0F;</span> Venmo
     </a>
-
-    <!-- Apple Pay via Stripe -->
     <a class="donate-btn btn-apple"
        href="https://buy.stripe.com/YOUR_STRIPE_LINK"
        target="_blank" rel="noopener">
-      <span class="btn-icon"> </span> Apple Pay
+      <span class="btn-icon">&#xF8FF;</span> Apple Pay
     </a>
-
-    <!-- Zelle -->
     <a class="donate-btn btn-zelle"
        href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiR1VSQ0hFVEFOIiwiYWN0aW9uIjoicGF5bWVudCIsInRva2VuIjoiMzYwMjI0NTk2MCJ9"
        target="_blank" rel="noopener">
-      <span class="btn-icon">⚡</span> Zelle
+      <span class="btn-icon">&#x26A1;</span> Zelle
     </a>
-
   </div>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
-
-<!-- Footer note -->
+# Footer note — separate block
+st.markdown(
+    """
 <div class="footer-note">
   Data sourced from the
   <a href="https://travel.state.gov" target="_blank" style="color:#007AFF">U.S. Department of State</a>.<br>
   For informational purposes only. Always verify with official sources before travel.
-</div>
-
 </div>
 """,
     unsafe_allow_html=True,
